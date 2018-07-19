@@ -18,8 +18,6 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    double lat = 0;
-    double longi = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
                 String coords = location.toString();
                 String[] coord = coords.split(" ");
                 String[] buffer = coord[1].split(",");
-                lat = Double.parseDouble(buffer[0]);
-                longi = Double.parseDouble(buffer[1]);
+                float lat = Float.parseFloat(buffer[0]);
+                float longi = Float.parseFloat(buffer[1]);
                 //------------------------------------
 
                 TextView lat_display = (TextView) findViewById(R.id.latitude);
