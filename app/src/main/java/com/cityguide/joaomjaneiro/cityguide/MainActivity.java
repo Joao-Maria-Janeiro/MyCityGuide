@@ -2,7 +2,10 @@ package com.cityguide.joaomjaneiro.cityguide;
 
 import android.Manifest;
 import android.content.Context;
+<<<<<<< HEAD
 import android.content.DialogInterface;
+=======
+>>>>>>> be8d42cd3fc55460ef2722677c6299cdebb6f9dd
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -20,6 +23,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import java.io.IOException;
 import java.util.List;
@@ -51,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+<<<<<<< HEAD
 
                 //If there's no Internet connection throw a popup
                 if(!isConnected(MainActivity.this)) {
@@ -77,7 +85,22 @@ public class MainActivity extends AppCompatActivity {
                     String address = displayCoord(lat, longi);
                     //------------------------------
                 }
+=======
+                //Converting the GPS string to two integers for latitude and longitude
+                //-----------------------------------
+                String coords = location.toString();
+                String[] coord = coords.split(" ");
+                String[] buffer = coord[1].split(",");
+                lat = Double.parseDouble(buffer[0]);
+                longi = Double.parseDouble(buffer[1]);
+                //------------------------------------
+>>>>>>> be8d42cd3fc55460ef2722677c6299cdebb6f9dd
 
+
+                TextView long_display = (TextView) findViewById(R.id.longDisplay);
+                long_display.setText(longi + "");
+
+                String address = displayCoord(lat, longi);
 
             }
 
@@ -115,7 +138,10 @@ public class MainActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> be8d42cd3fc55460ef2722677c6299cdebb6f9dd
     }
 
     //After the request is accepted get the coordinates
@@ -163,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
         return address;
     }
 
+<<<<<<< HEAD
     //Check if the user's device is connected to the internet
     public boolean isConnected(Context context) {
 
@@ -201,4 +228,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+=======
+>>>>>>> be8d42cd3fc55460ef2722677c6299cdebb6f9dd
 }
