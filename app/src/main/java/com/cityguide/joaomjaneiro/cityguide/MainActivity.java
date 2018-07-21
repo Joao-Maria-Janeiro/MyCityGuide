@@ -23,7 +23,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
     private LocationManager locationManager;
     private LocationListener locationListener;
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference pointsRef = db.collection("PointsOfInterest");
+
+    HashMap<String, String> points = new HashMap<>();
+
 
     double lat = 0;
     double longi = 0;
@@ -77,16 +93,18 @@ public class MainActivity extends AppCompatActivity {
                     ImageButton upNextBtn = findViewById(R.id.upNextBtn);
 
 
-                    if(address.equals("Praça Luís de Camões")) {
-                        availableLocation.setImageResource(R.drawable.camoes);
-                        upNextBtn.setImageResource(R.drawable.chiado);
-                        availableLocation.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(MainActivity.this,"Abrir Camoes", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
+//                    if(address.equals("Praça Luís de Camões")) {
+//                        availableLocation.setImageResource(R.drawable.camoes);
+//                        upNextBtn.setImageResource(R.drawable.chiado);
+//                        availableLocation.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                Toast.makeText(MainActivity.this,"Abrir Camoes", Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+//                    }
+
+
                 }
 
 
@@ -212,5 +230,22 @@ public class MainActivity extends AppCompatActivity {
         return builder;
     }
 
+    //Load all the points of interest from the database
+    public void loadPoints(View v){
+        pointsRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                            Point point = documentSnapshot.toObject(Point.class);
+
+                            String title = point.getTitle();
+                            String description = point.getDescription();
+
+                            points.put(title, description);
+                        }
+                    }
+                });
+    }
 
 }
