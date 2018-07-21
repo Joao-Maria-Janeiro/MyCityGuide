@@ -18,12 +18,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
 import java.io.IOException;
 import java.util.List;
@@ -70,23 +68,27 @@ public class MainActivity extends AppCompatActivity {
                     longi = Double.parseDouble(buffer[1]);
                     //------------------------------------
 
-                    //Displaying the coordenates on screen
+                    //Displaying the information on screenm
                     //------------------------------
-                    TextView lat_display = (TextView) findViewById(R.id.latitude);
-                    lat_display.setText(lat + "");
-
-                    TextView long_display = (TextView) findViewById(R.id.longDisplay);
-                    long_display.setText(longi + "");
-
                     String address = displayCoord(lat, longi);
                     //------------------------------
+
+                    ImageButton availableLocation = findViewById(R.id.availableLocation);
+                    ImageButton upNextBtn = findViewById(R.id.upNextBtn);
+
+
+                    if(address.equals("Praça Luís de Camões")) {
+                        availableLocation.setImageResource(R.drawable.camoes);
+                        upNextBtn.setImageResource(R.drawable.chiado);
+                        availableLocation.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(MainActivity.this,"Abrir Camoes", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 }
 
-
-                TextView long_display = (TextView) findViewById(R.id.longDisplay);
-                long_display.setText(longi + "");
-
-                String address = displayCoord(lat, longi);
 
             }
 
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
         }
+
     }
 
     //After the request is accepted get the coordinates
@@ -140,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //Corrdinates to address handling:
 
     //Transform coordenates into a String
     public String getAddress(Context ctx, double lat, double lng){
@@ -159,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //Display the address in a TextView
+    //Reduce the address to the interesting part and display the address in a TextView
     public String displayCoord(double lat, double longi){
         String buffer = getAddress(this, lat, longi);
         String[] tmp = buffer.split(",");
@@ -170,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
         add.setText(address);
         return address;
     }
+
+    //Internet checks and dialogs:
 
     //Check if the user's device is connected to the internet
     public boolean isConnected(Context context) {
@@ -205,8 +211,6 @@ public class MainActivity extends AppCompatActivity {
 
         return builder;
     }
-
-
 
 
 }
