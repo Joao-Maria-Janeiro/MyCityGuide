@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "967211185502-kc3ri0ih8n55ti1jurvp443m4uu63rhu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cityguide.joaomjaneiro.cityguide",
+            "certificate_hash": "3004a15fcc97abd461405b19c233fe41ca403891"
+          }
+        },
+        {
           "client_id": "967211185502-41e2t29gskscab49qtf6igsio92qr9nr.apps.googleusercontent.com",
           "client_type": 3
         }

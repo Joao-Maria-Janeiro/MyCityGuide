@@ -26,11 +26,12 @@ import android.widget.Toast;
 import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -42,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference pointsRef = db.collection("PointsOfInterest");
+    //private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    //private CollectionReference pointsRef = db.collection("PointsOfInterest");
+
+    private DatabaseReference dbReference;
 
     HashMap<String, String> points = new HashMap<>();
 
@@ -63,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         }else {
 
         }
+
+        dbReference = FirebaseDatabase.getInstance().getReference();
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
@@ -104,9 +109,7 @@ public class MainActivity extends AppCompatActivity {
 //                        });
 //                    }
 
-
                 }
-
 
             }
 
@@ -144,6 +147,8 @@ public class MainActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
         }
+
+        loadPoints();
 
     }
 
@@ -230,8 +235,27 @@ public class MainActivity extends AppCompatActivity {
         return builder;
     }
 
+    public void loadPoints() {
+        dbReference.child("Places").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot information : dataSnapshot.getChildren()) {
+                    String placeUid = information.getKey().toString();
+                    String description = information.child("description").getValue().toString();
+                    String name = information.child("name").getValue().toString();
+                    Log.d("1234", name + "\n" + description + "\n");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     //Load all the points of interest from the database
-    public void loadPoints(View v){
+    /*public void loadPoints(View v){
         pointsRef.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -246,6 +270,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }
+    }*/
 
 }
