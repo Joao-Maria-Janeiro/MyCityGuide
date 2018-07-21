@@ -34,6 +34,8 @@ import com.google.firebase.database.ValueEventListener;
 
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -43,13 +45,10 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    //private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    //private CollectionReference pointsRef = db.collection("PointsOfInterest");
 
     private DatabaseReference dbReference;
 
-    HashMap<String, String> points = new HashMap<>();
-
+    ArrayList<String> pointInfo = new ArrayList<>();
 
     double lat = 0;
     double longi = 0;
@@ -108,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
 //                            }
 //                        });
 //                    }
+                    loadPoints(address);
+                    loadPointInfo(pointInfo, availableLocation);
 
                 }
 
@@ -147,8 +148,6 @@ public class MainActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
         }
-
-        loadPoints();
 
     }
 
@@ -235,7 +234,8 @@ public class MainActivity extends AppCompatActivity {
         return builder;
     }
 
-    public void loadPoints() {
+    //Gets all the points from the database
+    public void loadPoints(final String address) {
         dbReference.child("Places").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -243,7 +243,14 @@ public class MainActivity extends AppCompatActivity {
                     String placeUid = information.getKey().toString();
                     String description = information.child("description").getValue().toString();
                     String name = information.child("name").getValue().toString();
-                    Log.d("1234", name + "\n" + description + "\n");
+                    //Log.d("1234", name + "\n" + description + "\n");
+                    //Toast.makeText(MainActivity.this,name, Toast.LENGTH_SHORT).show();
+
+                    if(address.equals(name)){
+                        pointInfo.add(name);
+                        pointInfo.add(description);
+                        break;
+                    }
                 }
             }
 
@@ -254,22 +261,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //Load all the points of interest from the database
-    /*public void loadPoints(View v){
-        pointsRef.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                            Point point = documentSnapshot.toObject(Point.class);
+    public void loadPointInfo( ArrayList<String> pointInfo, ImageButton availableLocation){
+        availableLocation.setImageResource(R.drawable.camoes);
+        Toast.makeText(MainActivity.this, pointInfo.get(0), Toast.LENGTH_SHORT).show();
+    }
 
-                            String title = point.getTitle();
-                            String description = point.getDescription();
-
-                            points.put(title, description);
-                        }
-                    }
-                });
-    }*/
 
 }
