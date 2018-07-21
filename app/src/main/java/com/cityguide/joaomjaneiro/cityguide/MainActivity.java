@@ -1,7 +1,10 @@
 package com.cityguide.joaomjaneiro.cityguide;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,11 +16,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     private LocationManager locationManager;
     private LocationListener locationListener;
 
+    double lat = 0;
+    double longi = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,19 +38,22 @@ public class MainActivity extends AppCompatActivity {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Log.d("Location: ", location.toString());
-
                 //Converting the GPS string to two integers for latitude and longitude
                 //-----------------------------------
                 String coords = location.toString();
                 String[] coord = coords.split(" ");
                 String[] buffer = coord[1].split(",");
-                float lat = Float.parseFloat(buffer[0]);
-                float longi = Float.parseFloat(buffer[1]);
+                lat = Double.parseDouble(buffer[0]);
+                longi = Double.parseDouble(buffer[1]);
                 //------------------------------------
 
                 TextView lat_display = (TextView) findViewById(R.id.latitude);
                 lat_display.setText(lat + "");
+
+                TextView long_display = (TextView) findViewById(R.id.longDisplay);
+                long_display.setText(longi + "");
+
+                String address = displayCoord(lat, longi);
 
             }
 
@@ -78,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
         }
-        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
 
     @Override
@@ -92,4 +103,37 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
+    //Transform coordenates into a String
+    public String getAddress(Context ctx, double lat, double lng){
+        String FullAdd = null;
+        try {
+            Geocoder geocoder = new Geocoder(ctx, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            if( addresses.size() > 0){
+                Address address = addresses.get(0);
+                FullAdd = address.getAddressLine(0);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return FullAdd;
+    }
+
+
+    //Display the address in a TextView
+    public String displayCoord(double lat, double longi){
+        String buffer = getAddress(this, lat, longi);
+        String[] tmp = buffer.split(",");
+        String address = tmp[0];
+        address = address.replaceAll("\\d","");
+        address = address.substring(0, address.length() - 1);
+        TextView add = (TextView) findViewById(R.id.addressText);
+        add.setText(address);
+        return address;
+    }
+
 }
