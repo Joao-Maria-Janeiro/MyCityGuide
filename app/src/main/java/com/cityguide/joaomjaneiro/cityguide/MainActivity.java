@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     double lat = 0;
     double longi = 0;
 
+    boolean addressFound = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +110,11 @@ public class MainActivity extends AppCompatActivity {
 //                        });
 //                    }
                     loadPoints(address);
-                    loadPointInfo(pointInfo, availableLocation);
+                    if(addressFound){
+                        availableLocation.setImageResource(R.drawable.camoes);
+                        addressFound = false;
+                        pointInfo.clear();
+                    }
 
                 }
 
@@ -249,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
                     if(address.equals(name)){
                         pointInfo.add(name);
                         pointInfo.add(description);
+                        addressFound = true;
                         break;
                     }
                 }
@@ -260,11 +267,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void loadPointInfo( ArrayList<String> pointInfo, ImageButton availableLocation){
-        availableLocation.setImageResource(R.drawable.camoes);
-        Toast.makeText(MainActivity.this, pointInfo.get(0), Toast.LENGTH_SHORT).show();
-    }
-
 
 }
