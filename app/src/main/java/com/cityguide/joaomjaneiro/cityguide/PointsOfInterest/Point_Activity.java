@@ -1,5 +1,6 @@
 package com.cityguide.joaomjaneiro.cityguide.PointsOfInterest;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -8,16 +9,6 @@ import com.cityguide.joaomjaneiro.cityguide.R;
 
 public class Point_Activity extends AppCompatActivity {
 
-    String title;
-    String description;
-
-    public Point_Activity(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
-    public Point_Activity(){
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +17,10 @@ public class Point_Activity extends AppCompatActivity {
 
         TextView setTitle= (TextView)findViewById(R.id.title);
         TextView setDescription= (TextView)findViewById(R.id.description);
+
+        Intent intent = getIntent();
+        String title = intent.getStringExtra("title");
+        String description = intent.getStringExtra("description");
         setTitle.setText(title);
         setDescription.setText(description);
 

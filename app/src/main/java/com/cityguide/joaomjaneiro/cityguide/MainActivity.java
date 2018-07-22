@@ -3,6 +3,7 @@ package com.cityguide.joaomjaneiro.cityguide;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point;
+import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point_Activity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -112,6 +114,12 @@ public class MainActivity extends AppCompatActivity {
                     loadPoints(address);
                     if(addressFound){
                         availableLocation.setImageResource(R.drawable.camoes);
+                        availableLocation.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                openActivity();
+                            }
+                        });
                         addressFound = false;
                         pointInfo.clear();
                     }
@@ -266,6 +274,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void openActivity(){
+        Intent myIntent = new Intent(this, Point_Activity.class);
+        myIntent.putExtra("title", pointInfo.get(0));
+        myIntent.putExtra("description", pointInfo.get(1));
+        startActivity(myIntent);
     }
 
 }
