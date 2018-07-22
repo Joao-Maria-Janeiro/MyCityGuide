@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> pointInfo = new ArrayList<>();
 
+    String address;
+
     double lat = 0;
     double longi = 0;
 
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
                     //Displaying the information on screenm
                     //------------------------------
-                    String address = displayCoord(lat, longi);
+                    address = displayCoord(lat, longi);
                     //------------------------------
 
                     ImageButton availableLocation = findViewById(R.id.availableLocation);
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 //                            }
 //                        });
 //                    }
-                    loadPoints(address);
+                    loadPoints();
                     if(addressFound){
                         availableLocation.setImageResource(R.drawable.camoes);
                         availableLocation.setOnClickListener(new View.OnClickListener() {
@@ -249,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Gets all the points from the database
-    public void loadPoints(final String address) {
+    public void loadPoints() { //A String address está final pelo que vai dar um erro sempre que fôr alterada, temos de arranjar forma de passar a String address mas que não tenha de ser final
         dbReference.child("Places").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -257,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
                     String placeUid = information.getKey().toString();
                     String description = information.child("description").getValue().toString();
                     String name = information.child("name").getValue().toString();
-                    //Log.d("1234", name + "\n" + description + "\n");
+                    Log.d("1234", name + "\n" + description + "\n");
                     //Toast.makeText(MainActivity.this,name, Toast.LENGTH_SHORT).show();
 
                     if(address.equals(name)){
