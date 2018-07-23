@@ -28,6 +28,7 @@ import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point;
 import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point_Activity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,12 +43,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    private TextView tvLogout;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-
+    private FirebaseAuth firebaseAuth;
     private DatabaseReference dbReference;
 
     ArrayList<String> pointInfo = new ArrayList<>();
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //If there's no Internet connection throw a popup
         if(!isConnected(MainActivity.this)) {
             buildDialog(MainActivity.this).show();
@@ -72,9 +75,19 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        //If user somehow is not logged in
+        if(firebaseAuth.getCurrentUser() == null) {
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+
         dbReference = FirebaseDatabase.getInstance().getReference();
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        tvLogout = (TextView) findViewById(R.id.tvLogout);
+
+        tvLogout.setOnClickListener(this);
 
         locationListener = new LocationListener() {
             @Override
@@ -285,4 +298,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(myIntent);
     }
 
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.tvLogout:
+                firebaseAuth.signOut();
+                finish();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+        }
+    }
 }
