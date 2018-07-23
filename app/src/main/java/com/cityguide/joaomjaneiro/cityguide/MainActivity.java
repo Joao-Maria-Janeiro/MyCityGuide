@@ -77,10 +77,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         firebaseAuth = FirebaseAuth.getInstance();
         //If user somehow is not logged in
-        if(firebaseAuth.getCurrentUser() == null) {
+        /*if(firebaseAuth.getCurrentUser() == null) {
             finish();
             startActivity(new Intent(this, LoginActivity.class));
-        }
+        }*/
 
         dbReference = FirebaseDatabase.getInstance().getReference();
 

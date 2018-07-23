@@ -48,6 +48,19 @@
             android:paddingRight="20dp"
             android:inputType="textPassword" />
 
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:hint="Enter your name"
+            android:background="@drawable/search_bar_style"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:inputType="text" />
+
 
         <Button
             android:id="@+id/btnRegister"

@@ -17,15 +17,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
     private Button btnRegister;
-    private EditText etEmail, etPassword;
+    private EditText etEmail, etPassword, etUsername;
     private TextView tvLogin;
 
     private ProgressDialog progressDialog;
 
     private FirebaseAuth firebaseAuth;
+    private DatabaseReference db;
 
 
     @Override
@@ -34,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
+        db = FirebaseDatabase.getInstance().getReference();
         //If user already logged in
         if(firebaseAuth.getCurrentUser() != null) {
             finish();
@@ -46,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         btnRegister = (Button) findViewById(R.id.btnRegister);
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
+        etUsername = (EditText) findViewById(R.id.etUsername);
         tvLogin = (TextView) findViewById(R.id.tvLogin);
 
         btnRegister.setOnClickListener(this);
@@ -56,6 +60,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private void registerUser() {
         final String email = etEmail.getText().toString().trim();
         final String password = etPassword.getText().toString().trim();
+        final String username = etUsername.getText().toString().trim();
 
         if(TextUtils.isEmpty(email)) {
             //email is empty
@@ -65,6 +70,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if(TextUtils.isEmpty(password)) {
             //pass is empty
             Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT);
+            return;
+        }
+        if(TextUtils.isEmpty(username)) {
+            //username is empty
+            Toast.makeText(this, "Please enter username", Toast.LENGTH_SHORT);
             return;
         }
 
@@ -78,6 +88,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 if(task.isSuccessful()) {
                     //user is sucessfully registered and logged in
                     String user_id = firebaseAuth.getCurrentUser().getUid();
+                    db.child("Users").child(user_id).child("username").setValue(username);
+                    db.child("Users").child(user_id).child("points").setValue(0);
                     progressDialog.dismiss();
                     finish();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
