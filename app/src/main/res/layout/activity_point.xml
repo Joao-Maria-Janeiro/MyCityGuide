@@ -41,4 +41,57 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+
+    <ImageButton
+        android:id="@+id/mapBtn"
+        style="@style/AppTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#00000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/baseline_place_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/mainActivityBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#00000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/mapBtn"
+        app:layout_constraintHorizontal_bias="0.278"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/baseline_home_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/userBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#00ff4081"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.73"
+        app:layout_constraintStart_toEndOf="@+id/mapBtn"
+        app:layout_constraintTop_toBottomOf="@+id/description"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/baseline_person_black_24dp" />
+
 </android.support.constraint.ConstraintLayout>

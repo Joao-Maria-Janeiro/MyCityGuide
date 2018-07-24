@@ -22,24 +22,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point;
 import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point_Activity;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseApp;
+import com.cityguide.joaomjaneiro.cityguide.User.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -84,11 +80,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         dbReference = FirebaseDatabase.getInstance().getReference();
 
-        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         tvLogout = (TextView) findViewById(R.id.tvLogout);
 
         tvLogout.setOnClickListener(this);
 
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -115,6 +111,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ImageButton availableLocation = findViewById(R.id.availableLocation);
                     ImageButton upNextBtn = findViewById(R.id.upNextBtn);
 
+                    ImageButton userBtn = findViewById(R.id.userBtn);
+                    userBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openUserActivity();
+                        }
+                    });
+                    ImageButton mapBtn = findViewById(R.id.mapBtn);
+                    mapBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openMapActivity();
+                        }
+                    });
+
 
 //                    if(address.equals("Praça Luís de Camões")) {
 //                        availableLocation.setImageResource(R.drawable.camoes);
@@ -128,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    }
                     loadPoints();
                     if(addressFound){
-                        availableLocation.setImageResource(R.drawable.camoes);
+                        Picasso.get().load(pointInfo.get(2)).resize(getResources().getDisplayMetrics().widthPixels, 700).into(availableLocation);
                         availableLocation.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -161,23 +172,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //If we don't have the permission to access GPS, we request it:
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
-
         }else{
             //After we have the user's permission
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
         }
-
     }
 
     //After the request is accepted get the coordinates
@@ -272,12 +271,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String placeUid = information.getKey().toString();
                     String description = information.child("description").getValue().toString();
                     String name = information.child("name").getValue().toString();
+                    String image = information.child("image").getValue().toString();
                     Log.d("1234", name + "\n" + description + "\n");
                     //Toast.makeText(MainActivity.this,name, Toast.LENGTH_SHORT).show();
 
                     if(address.equals(name)){
                         pointInfo.add(name);
                         pointInfo.add(description);
+                        pointInfo.add(image);
                         addressFound = true;
                         break;
                     }
@@ -295,7 +296,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent myIntent = new Intent(this, Point_Activity.class);
         myIntent.putExtra("title", pointInfo.get(0));
         myIntent.putExtra("description", pointInfo.get(1));
+        myIntent.putExtra("image", pointInfo.get(2));
         startActivity(myIntent);
+    }
+
+    public void openUserActivity(){
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    public void openMapActivity(){
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
     }
 
     @Override

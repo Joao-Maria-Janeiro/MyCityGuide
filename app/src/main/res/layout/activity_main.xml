@@ -11,13 +11,13 @@
         android:id="@+id/addressText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="76dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="Address"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.463"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -73,6 +73,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/white" />
 
     <TextView
@@ -80,5 +81,57 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Logout"/>
+
+
+    <ImageButton
+        android:id="@+id/mapBtn"
+        style="@style/AppTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#00000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addressText"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/baseline_place_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/mainActivityBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#00000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/mapBtn"
+        app:layout_constraintHorizontal_bias="0.278"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addressText"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/baseline_home_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/userBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#00ff4081"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.73"
+        app:layout_constraintStart_toEndOf="@+id/mapBtn"
+        app:layout_constraintTop_toBottomOf="@+id/addressText"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/baseline_person_black_24dp" />
 
 </android.support.constraint.ConstraintLayout>
