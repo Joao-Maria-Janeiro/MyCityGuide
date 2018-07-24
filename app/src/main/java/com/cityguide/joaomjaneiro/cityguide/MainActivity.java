@@ -14,6 +14,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +43,8 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private TextView tvLogout;
+
+    private AccountFragment accountFragment;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -82,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tvLogout = (TextView) findViewById(R.id.tvLogout);
 
+        accountFragment = new AccountFragment();
+
         tvLogout.setOnClickListener(this);
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
@@ -115,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     userBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            openUserActivity();
+                            openUserFragment(accountFragment);
                         }
                     });
                     ImageButton mapBtn = findViewById(R.id.mapBtn);
@@ -292,6 +298,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    private void setFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.menuFrame, fragment);
+        fragmentTransaction.commit();
+    }
+
     public void openActivity(){
         Intent myIntent = new Intent(this, Point_Activity.class);
         myIntent.putExtra("title", pointInfo.get(0));
@@ -300,9 +312,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(myIntent);
     }
 
-    public void openUserActivity(){
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+    public void openUserFragment(Fragment fragment){
+        setFragment(fragment);
     }
 
     public void openMapActivity(){
