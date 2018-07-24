@@ -2,7 +2,6 @@ package com.cityguide.joaomjaneiro.cityguide.User;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -22,23 +21,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
-    private static final int PICK_IMAGE = 1;
     private Button btnRegister;
     private EditText etEmail, etPassword, etUsername;
     private TextView tvLogin;
-    private CircleImageView accountImage;
 
     private ProgressDialog progressDialog;
-    private Uri imageUri;
-    private StorageReference mStorage;
 
     private FirebaseAuth firebaseAuth;
     private DatabaseReference db;
@@ -57,13 +46,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }
 
-        imageUri = null;
-        mStorage = FirebaseStorage.getInstance().getReference().child("userImages");
-
         progressDialog = new ProgressDialog(this);
 
         btnRegister = (Button) findViewById(R.id.btnRegister);
-        accountImage = (CircleImageView) findViewById(R.id.register_image_btn);
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
         etUsername = (EditText) findViewById(R.id.etUsername);
@@ -71,7 +56,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         btnRegister.setOnClickListener(this);
         tvLogin.setOnClickListener(this);
-        accountImage.setOnClickListener(this);
 
     }
 
@@ -105,23 +89,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
                     //user is sucessfully registered and logged in
-                    final String user_id = firebaseAuth.getCurrentUser().getUid();
+                    String user_id = firebaseAuth.getCurrentUser().getUid();
                     db.child("Users").child(user_id).child("username").setValue(username);
                     db.child("Users").child(user_id).child("points").setValue(0);
-
-                    StorageReference user_profile = mStorage.child(user_id + ".jpg");  //Pode ter de ser .png
-                    user_profile.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> uploadTask) {
-                            if(uploadTask.isSuccessful()) {
-                                String download_url = uploadTask.getResult().getDownloadUrl().toString();
-                                db.child("Users").child(user_id).child("image").setValue(download_url);
-                            } else {
-                                Toast.makeText(RegisterActivity.this, "Error: " + uploadTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-
                     progressDialog.dismiss();
                     finish();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -133,40 +103,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private void uploadImage() {
-
-    }
-
     @Override
     public void onClick(View view) {
         if(view == btnRegister) {
-            if(imageUri == null) {
-                registerUser();
-            }else {
-                uploadImage();
-                registerUser();
-            }
+            registerUser();
         }else if(view == tvLogin) {
             //opens login activity
             startActivity(new Intent(this, LoginActivity.class));
-        }else if(view == accountImage) {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
         }
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == PICK_IMAGE) {
-            imageUri = data.getData();
-            accountImage.setImageURI(imageUri);
-
-        }
-    }
-
 }
 

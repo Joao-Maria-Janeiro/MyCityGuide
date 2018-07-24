@@ -26,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point_Activity;
+import com.cityguide.joaomjaneiro.cityguide.User.AccountFragment;
 import com.cityguide.joaomjaneiro.cityguide.User.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
