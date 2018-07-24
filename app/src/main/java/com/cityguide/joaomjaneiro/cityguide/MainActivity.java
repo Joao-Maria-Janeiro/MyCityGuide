@@ -83,13 +83,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, LoginActivity.class));
         }*/
 
+        if(firebaseAuth.getCurrentUser() != null){
+            tvLogout = (TextView) findViewById(R.id.tvLogout);
+            tvLogout.setOnClickListener(this);
+        }
+
         dbReference = FirebaseDatabase.getInstance().getReference();
 
-        tvLogout = (TextView) findViewById(R.id.tvLogout);
 
         accountFragment = new AccountFragment();
 
-        tvLogout.setOnClickListener(this);
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
