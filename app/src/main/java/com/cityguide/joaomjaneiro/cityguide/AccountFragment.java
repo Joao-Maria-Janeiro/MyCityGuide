@@ -1,5 +1,7 @@
 package com.cityguide.joaomjaneiro.cityguide;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,8 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.cityguide.joaomjaneiro.cityguide.User.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -41,6 +49,30 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
         tvTerms = v.findViewById(R.id.textViewTerms);
         profileImg = v.findViewById(R.id.cImgViewAccount);
 
+        if(firebaseAuth.getCurrentUser() != null) {
+            String user_id = firebaseAuth.getCurrentUser().getUid().toString();
+            dbReference = FirebaseDatabase.getInstance().getReference().child("Users");
+            dbReference.child(user_id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String username = dataSnapshot.child("username").getValue().toString();
+                    String url = dataSnapshot.child("image").getValue().toString();
+                    String points = dataSnapshot.child("points").getValue().toString();
+
+                    //Falta adicionar a profile image com o url da database.
+                    tvPoints.setText(points);
+                    tvChangeName.setText(username);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
         tvLogout.setOnClickListener(this);
         tvUsername.setOnClickListener(this);
         tvSettings.setOnClickListener(this);
@@ -52,6 +84,15 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-
+        switch(view.getId()) {
+            case R.id.textViewLogout:
+                if(firebaseAuth.getCurrentUser() != null) {
+                    firebaseAuth.signOut();
+                    getActivity().finish();
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(intent);
+                }
+                break;
+        }
     }
 }
