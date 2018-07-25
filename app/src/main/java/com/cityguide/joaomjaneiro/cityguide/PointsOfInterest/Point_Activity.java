@@ -3,6 +3,7 @@ package com.cityguide.joaomjaneiro.cityguide.PointsOfInterest;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -63,35 +64,43 @@ public class Point_Activity extends AppCompatActivity {
         if(firebaseAuth.getCurrentUser() != null){ //If user is signed in
             user_id = firebaseAuth.getCurrentUser().getUid().toString();
 
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("locations");
 
-            db.child("Users").child("user_id").child("locations").addValueEventListener(new ValueEventListener() {
+
+            ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot information : dataSnapshot.getChildren()) {
-                        String place = information.getKey().toString();
-                        Toast.makeText(Point_Activity.this, "Teste", Toast.LENGTH_SHORT).show();
-                        String name = information.child(place).getValue().toString();
+                    for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
+                        Log.i("Location_id:", userSnapshot.getKey().toString());
+                        Log.i("Location_name:", userSnapshot.getValue().toString());
+                        Log.i("title", title);
 
-                        if(("Location name:" + title).equals(name)){
+                        if(userSnapshot.getValue().toString().equals(title)) {
+                            Toast.makeText(Point_Activity.this, "That place is already savedHERE", Toast.LENGTH_SHORT).show();
                             canAdd = false;
                             break;
                         }
                     }
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    Log.w("Error", "onCancelled", databaseError.toException());
                 }
             });
 
-            if(canAdd){
-                saveBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        db.child("Users").child(user_id).child("locations").push().setValue("Location name:" + title);
+            saveBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(canAdd) {
+                        db.child("Users").child(user_id).child("locations").push().setValue(title);
+                    }else {
+                        Toast.makeText(Point_Activity.this, "That place is already saved", Toast.LENGTH_SHORT).show();
+
                     }
-                });
-            }
+                }
+            });
+
 
         }else{
             saveBtn.setOnClickListener(new View.OnClickListener() {
@@ -101,17 +110,5 @@ public class Point_Activity extends AppCompatActivity {
                 }
             });
         }
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
