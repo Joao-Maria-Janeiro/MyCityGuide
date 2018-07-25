@@ -45,13 +45,14 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private TextView tvLogout;
 
-    private AccountFragment accountFragment;
-
     private LocationManager locationManager;
     private LocationListener locationListener;
 
     private FirebaseAuth firebaseAuth;
     private DatabaseReference dbReference;
+
+    private AccountFragment accountFragment;
+
 
     ArrayList<String> pointInfo = new ArrayList<>();
 
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
+        //Checks if user is logged in
         firebaseAuth = FirebaseAuth.getInstance();
         //If user somehow is not logged in
         /*if(firebaseAuth.getCurrentUser() == null) {
@@ -83,13 +85,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, LoginActivity.class));
         }*/
 
-        if(firebaseAuth.getCurrentUser() != null){
-            tvLogout = (TextView) findViewById(R.id.tvLogout);
-            tvLogout.setOnClickListener(this);
-        }
 
         dbReference = FirebaseDatabase.getInstance().getReference();
 
+        tvLogout = (TextView) findViewById(R.id.tvLogout);
+
+        tvLogout.setOnClickListener(this);
 
         accountFragment = new AccountFragment();
 
@@ -125,7 +126,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     userBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            openUserFragment(accountFragment);
+                            if(firebaseAuth.getCurrentUser() != null){
+                                openUserFragment(accountFragment);
+                            }else{
+                                openUserActivity();
+                            }
                         }
                     });
                     ImageButton mapBtn = findViewById(R.id.mapBtn);
@@ -273,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //Gets all the points from the database
-    public void loadPoints() { //A String address está final pelo que vai dar um erro sempre que fôr alterada, temos de arranjar forma de passar a String address mas que não tenha de ser final
+    public void loadPoints() {
         dbReference.child("Places").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -282,9 +287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String description = information.child("description").getValue().toString();
                     String name = information.child("name").getValue().toString();
                     String image = information.child("image").getValue().toString();
-                    Log.d("1234", name + "\n" + description + "\n");
-                    //Toast.makeText(MainActivity.this,name, Toast.LENGTH_SHORT).show();
-
+                    
                     if(address.equals(name)){
                         pointInfo.add(name);
                         pointInfo.add(description);
@@ -302,12 +305,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void setFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.menuFrame, fragment);
-        fragmentTransaction.commit();
-    }
-
     public void openActivity(){
         Intent myIntent = new Intent(this, Point_Activity.class);
         myIntent.putExtra("title", pointInfo.get(0));
@@ -316,13 +313,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(myIntent);
     }
 
-    public void openUserFragment(Fragment fragment){
-        setFragment(fragment);
+    public void openUserActivity(){
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     public void openMapActivity(){
         Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
+    }
+
+
+    private void setFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.menuFrame, fragment);
+        fragmentTransaction.commit();
+    }
+
+    public void openUserFragment(Fragment fragment){
+        setFragment(fragment);
     }
 
     @Override
