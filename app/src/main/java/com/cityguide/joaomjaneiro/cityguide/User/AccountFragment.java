@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.cityguide.joaomjaneiro.cityguide.MainActivity;
 import com.cityguide.joaomjaneiro.cityguide.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -41,6 +43,11 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
         View v = inflater.inflate(R.layout.fragment_account, container, false);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        //If user is not logged in
+        if(firebaseAuth.getCurrentUser() == null) {
+            Toast.makeText(getContext(), "Can't access account - LogIn First!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getContext(), MainActivity.class));
+        }
 
         tvPoints = v.findViewById(R.id.tvPoints);
         tvLogout = v.findViewById(R.id.textViewLogout);
@@ -58,11 +65,13 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     String username = dataSnapshot.child("username").getValue().toString();
-                    String url = dataSnapshot.child("image").getValue().toString();
                     String points = dataSnapshot.child("points").getValue().toString();
 
-                    //Falta adicionar a profile image com o url da database.
-                    Picasso.get().load(url).into(profileImg);
+                    if(dataSnapshot.child("image").exists()) {
+                        String url = dataSnapshot.child("image").getValue().toString();
+                        Picasso.get().load(url).into(profileImg);
+                    }
+
                     tvPoints.setText(points);
                     tvChangeName.setText(username);
 

@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point_Activity;
 import com.cityguide.joaomjaneiro.cityguide.User.AccountFragment;
+import com.cityguide.joaomjaneiro.cityguide.User.HomeFragment;
 import com.cityguide.joaomjaneiro.cityguide.User.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DatabaseReference dbReference;
 
     private AccountFragment accountFragment;
+    private HomeFragment homeFragment;
 
 
     ArrayList<String> pointInfo = new ArrayList<>();
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvLogout.setOnClickListener(this);
 
         accountFragment = new AccountFragment();
+        homeFragment = new HomeFragment();
 
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
@@ -121,13 +124,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     ImageButton availableLocation = findViewById(R.id.availableLocation);
                     ImageButton upNextBtn = findViewById(R.id.upNextBtn);
+                    ImageButton homeBtn = findViewById(R.id.mainActivityBtn);
 
                     ImageButton userBtn = findViewById(R.id.userBtn);
                     userBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             if(firebaseAuth.getCurrentUser() != null){
-                                openUserFragment(accountFragment);
+                                setFragment(accountFragment);
                             }else{
                                 openUserActivity();
                             }
@@ -138,6 +142,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onClick(View view) {
                             openMapActivity();
+                        }
+                    });
+
+                    homeBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            setFragment(homeFragment);
                         }
                     });
 
@@ -253,9 +264,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             android.net.NetworkInfo mobile = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
             if((mobile != null && mobile.isConnectedOrConnecting()) || (wifi != null && wifi.isConnectedOrConnecting())) return true;
-        else return false;
+            else return false;
         } else
-        return false;
+            return false;
     }
 
     //Dialog
@@ -287,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String description = information.child("description").getValue().toString();
                     String name = information.child("name").getValue().toString();
                     String image = information.child("image").getValue().toString();
-                    
+
                     if(address.equals(name)){
                         pointInfo.add(name);
                         pointInfo.add(description);
