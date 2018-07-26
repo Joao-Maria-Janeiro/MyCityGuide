@@ -27,7 +27,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class AccountFragment extends Fragment implements View.OnClickListener{
-    private TextView tvPoints, tvLogout, tvUsername, tvChangeName, tvSettings, tvHelp, tvTerms;
+    private TextView tvPoints, tvLogout, tvUsername, tvChangeName, tvSettings, tvHelp, tvTerms, userLocations;
     private CircleImageView profileImg;
 
     private FirebaseAuth firebaseAuth;
@@ -57,6 +57,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
         tvHelp = v.findViewById(R.id.textViewHelp);
         tvTerms = v.findViewById(R.id.textViewTerms);
         profileImg = v.findViewById(R.id.cImgViewAccount);
+        userLocations = v.findViewById(R.id.usrLocations);
 
         if(firebaseAuth.getCurrentUser() != null) {
             String user_id = firebaseAuth.getCurrentUser().getUid().toString();
@@ -90,6 +91,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
         tvSettings.setOnClickListener(this);
         tvHelp.setOnClickListener(this);
         tvTerms.setOnClickListener(this);
+        userLocations.setOnClickListener(this);
 
         return v;
     }
@@ -105,6 +107,9 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
                     startActivity(intent);
                 }
                 break;
+            case R.id.usrLocations:
+                Intent intent = new Intent(getActivity(), DisplayUserPlaces.class);
+                startActivity(intent);
         }
     }
 }

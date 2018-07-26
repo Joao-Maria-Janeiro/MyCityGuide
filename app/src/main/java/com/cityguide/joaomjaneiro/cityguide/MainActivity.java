@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point_Activity;
 import com.cityguide.joaomjaneiro.cityguide.User.AccountFragment;
+import com.cityguide.joaomjaneiro.cityguide.User.DisplayUserPlaces;
 import com.cityguide.joaomjaneiro.cityguide.User.HomeFragment;
 import com.cityguide.joaomjaneiro.cityguide.User.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity {
     private TextView tvLogout;
 
     private LocationManager locationManager;
@@ -77,25 +78,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             setContentView(R.layout.no_internet);
         }else {
 
+
+            //Checks if user is logged in
+            firebaseAuth = FirebaseAuth.getInstance();
+
+            dbReference = FirebaseDatabase.getInstance().getReference();
+
+            accountFragment = new AccountFragment();
+            homeFragment = new HomeFragment();
+
+
+
+            ImageButton userBtn = findViewById(R.id.userBtn);
+            userBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(firebaseAuth.getCurrentUser() != null){
+                        setFragment(accountFragment);
+                    }else{
+                        openUserActivity();
+                    }
+                }
+            });
+
         }
 
-        //Checks if user is logged in
-        firebaseAuth = FirebaseAuth.getInstance();
-        //If user somehow is not logged in
-        /*if(firebaseAuth.getCurrentUser() == null) {
-            finish();
-            startActivity(new Intent(this, LoginActivity.class));
-        }*/
 
-
-        dbReference = FirebaseDatabase.getInstance().getReference();
-
-        tvLogout = (TextView) findViewById(R.id.tvLogout);
-
-        tvLogout.setOnClickListener(this);
-
-        accountFragment = new AccountFragment();
-        homeFragment = new HomeFragment();
 
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
@@ -126,17 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ImageButton upNextBtn = findViewById(R.id.upNextBtn);
                     ImageButton homeBtn = findViewById(R.id.mainActivityBtn);
 
-                    ImageButton userBtn = findViewById(R.id.userBtn);
-                    userBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if(firebaseAuth.getCurrentUser() != null){
-                                setFragment(accountFragment);
-                            }else{
-                                openUserActivity();
-                            }
-                        }
-                    });
+
                     ImageButton mapBtn = findViewById(R.id.mapBtn);
                     mapBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -152,17 +150,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     });
 
-
-//                    if(address.equals("Praça Luís de Camões")) {
-//                        availableLocation.setImageResource(R.drawable.camoes);
-//                        upNextBtn.setImageResource(R.drawable.chiado);
-//                        availableLocation.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                Toast.makeText(MainActivity.this,"Abrir Camoes", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                    }
                     loadPoints();
                     if(addressFound){
                         Picasso.get().load(pointInfo.get(2)).resize(getResources().getDisplayMetrics().widthPixels, 700).into(availableLocation);
@@ -345,15 +332,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setFragment(fragment);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch(view.getId()) {
-            case R.id.tvLogout:
-                firebaseAuth.signOut();
-                finish();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                break;
-        }
-    }
 }

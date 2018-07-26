@@ -76,7 +76,6 @@ public class Point_Activity extends AppCompatActivity {
                         Log.i("title", title);
 
                         if(userSnapshot.getValue().toString().equals(title)) {
-                            Toast.makeText(Point_Activity.this, "That place is already savedHERE", Toast.LENGTH_SHORT).show();
                             canAdd = false;
                             break;
                         }
