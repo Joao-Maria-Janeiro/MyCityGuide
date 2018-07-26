@@ -9,23 +9,30 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imgViewPlacesList"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:padding="3dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/img_view_user_places"
-        app:srcCompat="@mipmap/ic_launcher" />
-
     <TextView
         android:id="@+id/placeInfo"
         android:textSize="16sp"
+        android:layout_weight="1"
         android:text="Place Name"
         android:textColor="@color/colorPrimaryDark"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/imgViewPlacesList"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="30dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/img_view_user_places"
+        android:padding="3dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+
 
 </LinearLayout>
