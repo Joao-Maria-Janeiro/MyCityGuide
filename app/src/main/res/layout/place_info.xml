@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgViewPlacesList"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:padding="3dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/img_view_user_places"
+        app:srcCompat="@mipmap/ic_launcher" />
+
     <TextView
         android:id="@+id/placeInfo"
-        android:textSize="20sp"
-        android:text="name"
-        android:layout_width="match_parent"
+        android:textSize="16sp"
+        android:text="Place Name"
+        android:textColor="@android:color/white"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

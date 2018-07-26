@@ -290,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
                         pointInfo.add(name);
                         pointInfo.add(description);
                         pointInfo.add(image);
+                        pointInfo.add(placeUid);
                         addressFound = true;
                         break;
                     }
@@ -308,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
         myIntent.putExtra("title", pointInfo.get(0));
         myIntent.putExtra("description", pointInfo.get(1));
         myIntent.putExtra("image", pointInfo.get(2));
+        myIntent.putExtra("placeId", pointInfo.get(3));
         startActivity(myIntent);
     }
 
