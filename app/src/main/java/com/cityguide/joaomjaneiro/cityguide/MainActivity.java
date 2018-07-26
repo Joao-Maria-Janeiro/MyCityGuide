@@ -24,12 +24,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point_Activity;
 import com.cityguide.joaomjaneiro.cityguide.User.AccountFragment;
 import com.cityguide.joaomjaneiro.cityguide.User.DisplayUserPlaces;
 import com.cityguide.joaomjaneiro.cityguide.User.HomeFragment;
 import com.cityguide.joaomjaneiro.cityguide.User.LoginActivity;
+import com.cityguide.joaomjaneiro.cityguide.User.TestActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -102,8 +104,6 @@ public class MainActivity extends AppCompatActivity {
             });
 
         }
-
-
 
 
         locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
