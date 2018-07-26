@@ -93,7 +93,7 @@ public class Point_Activity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if(canAdd) {
-                        db.child("Users").child(user_id).child("locations").child(placeId).setValue(true);
+                        db.child("Users").child(user_id).child("locations").child(placeId).setValue(title);
                     }else {
                         Toast.makeText(Point_Activity.this, "That place is already saved", Toast.LENGTH_SHORT).show();
 
