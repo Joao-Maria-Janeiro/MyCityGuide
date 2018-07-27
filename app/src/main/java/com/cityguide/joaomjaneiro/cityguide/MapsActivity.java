@@ -85,8 +85,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     locations.add(name);
                 }
 
-                locations.add("Praça do Comércio");
-
                 for(String name : locations){
                     new MapsActivity.GetCoordinates().execute(name);
                 }

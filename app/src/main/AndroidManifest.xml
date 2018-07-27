@@ -59,7 +59,10 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name=".EasterEgg.Tecnico" />
-        <activity android:name=".EasterEgg.Creator"></activity>
+        <activity
+            android:name=".EasterEgg.Creator"
+            android:label="@string/title_activity_creator"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
