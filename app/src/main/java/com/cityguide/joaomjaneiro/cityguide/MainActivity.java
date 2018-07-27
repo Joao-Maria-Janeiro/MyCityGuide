@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView tvLogout;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -122,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
                     buildDialog(MainActivity.this).show();
                     setContentView(R.layout.no_internet);
                 }else { //Only runs the app main code if there is an active internet connection
+
+
                     //Converting the GPS string to two integers for latitude and longitude
                     //-----------------------------------
                     String coords = location.toString();
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     longi = Double.parseDouble(buffer[1]);
                     //------------------------------------
 
-                    //Displaying the information on screenm
+                    //Displaying the information on screen
                     //------------------------------
                     address = displayCoord(lat, longi);
                     //------------------------------
@@ -290,12 +291,14 @@ public class MainActivity extends AppCompatActivity {
                     String description = information.child("description").getValue().toString();
                     String name = information.child("name").getValue().toString();
                     String image = information.child("image").getValue().toString();
+                    String audio = information.child("audio").getValue().toString();
 
                     if(address.equals(name)){
                         pointInfo.add(name);
                         pointInfo.add(description);
                         pointInfo.add(image);
                         pointInfo.add(placeUid);
+                        pointInfo.add(audio);
                         addressFound = true;
                         break;
                     }
@@ -315,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
         myIntent.putExtra("description", pointInfo.get(1));
         myIntent.putExtra("image", pointInfo.get(2));
         myIntent.putExtra("placeId", pointInfo.get(3));
+        myIntent.putExtra("audio", pointInfo.get(4));
         startActivity(myIntent);
     }
 
@@ -324,6 +328,7 @@ public class MainActivity extends AppCompatActivity {
         myIntent.putExtra("description", pointInfo.get(1));
         myIntent.putExtra("image", pointInfo.get(2));
         myIntent.putExtra("placeId", pointInfo.get(3));
+        myIntent.putExtra("audio", pointInfo.get(4));
         startActivity(myIntent);
     }
 

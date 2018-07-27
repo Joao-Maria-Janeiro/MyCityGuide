@@ -1,11 +1,13 @@
 package com.cityguide.joaomjaneiro.cityguide.PointsOfInterest;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,15 +52,18 @@ public class Point_Activity extends AppCompatActivity {
         TextView setDescription= (TextView)findViewById(R.id.description);
         ImageView imageView = findViewById(R.id.imageView);
         Button saveBtn = (Button)findViewById(R.id.saveBtn);
+        ImageButton audioBtn = findViewById(R.id.audioBtn);
 
         Intent intent = getIntent();
         title = intent.getStringExtra("title");
         final String placeId = intent.getStringExtra("placeId");
         String description = intent.getStringExtra("description");
         String image = intent.getStringExtra("image");
+        final String audio = intent.getStringExtra("audio");
         setTitle.setText(title);
         setDescription.setText(description);
         Picasso.get().load(image).resize(getResources().getDisplayMetrics().widthPixels, 700).into(imageView);
+        final MediaPlayer mediaPlayer = new MediaPlayer();
 
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -110,5 +116,28 @@ public class Point_Activity extends AppCompatActivity {
                 }
             });
         }
+
+        audioBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    mediaPlayer.setDataSource(audio);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+                        mediaPlayer.start();
+                    }
+                });
+                try {
+                    mediaPlayer.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 }
