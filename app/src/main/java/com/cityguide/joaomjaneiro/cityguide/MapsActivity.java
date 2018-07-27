@@ -6,6 +6,7 @@ import android.location.LocationListener;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Pair;
 import android.widget.Toast;
 
 import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point_Activity;
@@ -29,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerClickListener {
@@ -37,8 +39,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ChildEventListener childEventListener;
     private DatabaseReference mUsers;
     Marker marker;
-    double lat;
-    double lng;
+    ArrayList<String> locations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        locations = new ArrayList<>();
+
         googleMap.setOnMarkerClickListener(this);
         googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         mUsers.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -76,15 +79,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     String name = s.child("name").getValue().toString();
                     if(name.equals("R. Garret P")){
-                        name = "R. Garret";
+                        name = "Rua Garret";
                     }
 
+                    locations.add(name);
+                }
+
+                locations.add("Praça do Comércio");
+
+                for(String name : locations){
                     new MapsActivity.GetCoordinates().execute(name);
-
-                    LatLng location = new LatLng(lat, lng);
-
-
-                    mMap.addMarker(new MarkerOptions().position(location).title(name)).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
                 }
             }
 
@@ -95,26 +99,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private class GetCoordinates extends AsyncTask<String,Void,String> {
+    private class GetCoordinates extends AsyncTask<String,Void,Pair<String, String>> {
         ProgressDialog dialog = new ProgressDialog(MapsActivity.this);
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             dialog.setMessage("Please wait....");
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
+            dialog.setCanceledOnTouchOutside(true);
         }
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected Pair<String, String> doInBackground(String... strings) {
             String response;
             try{
+
                 String address = strings[0];
                 HttpDataHandler http = new HttpDataHandler();
                 String url = String.format("https://maps.googleapis.com/maps/api/geocode/json?address=%s",address);
                 response = http.getHTTPData(url);
-                return response;
+                return Pair.create(response, address);
             }
             catch (Exception ex)
             {
@@ -124,16 +128,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(Pair<String, String> responseAddress) {
             try{
-                JSONObject jsonObject = new JSONObject(s);
+                JSONObject jsonObject = new JSONObject(responseAddress.first);
 
-                lat = Double.parseDouble(((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+                double lat = Double.parseDouble(((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
                         .getJSONObject("location").get("lat").toString());
-                lng = Double.parseDouble(((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
-                        .getJSONObject("location").get("lng").toString());
-                Toast.makeText(MapsActivity.this, lng + "", Toast.LENGTH_SHORT).show();
 
+                double lng = Double.parseDouble(((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+                        .getJSONObject("location").get("lng").toString());
+
+                LatLng location = new LatLng(lat, lng);
+
+                mMap.addMarker(new MarkerOptions().position(location).title(responseAddress.second)).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
 
 
                 if(dialog.isShowing())

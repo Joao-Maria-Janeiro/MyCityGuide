@@ -20,18 +20,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.cityguide.joaomjaneiro.cityguide.EasterEgg.Tecnico;
 import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point_Activity;
 import com.cityguide.joaomjaneiro.cityguide.User.AccountFragment;
-import com.cityguide.joaomjaneiro.cityguide.User.DisplayUserPlaces;
 import com.cityguide.joaomjaneiro.cityguide.User.HomeFragment;
 import com.cityguide.joaomjaneiro.cityguide.User.LoginActivity;
-import com.cityguide.joaomjaneiro.cityguide.User.TestActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -103,6 +100,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            ImageButton mapBtn = findViewById(R.id.mapBtn);
+            mapBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    openMapActivity();
+                }
+            });
+
+
         }
 
 
@@ -135,13 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     ImageButton homeBtn = findViewById(R.id.mainActivityBtn);
 
 
-                    ImageButton mapBtn = findViewById(R.id.mapBtn);
-                    mapBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            openMapActivity();
-                        }
-                    });
+
 
                     homeBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -156,7 +156,12 @@ public class MainActivity extends AppCompatActivity {
                         availableLocation.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                openActivity();
+                                if(pointInfo.get(0).equals("Av. Rovisco Pais")){
+                                    openTecnico();
+                                }else{
+                                    openActivity();
+                                }
+
                             }
                         });
                         addressFound = false;
@@ -306,6 +311,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void openActivity(){
         Intent myIntent = new Intent(this, Point_Activity.class);
+        myIntent.putExtra("title", pointInfo.get(0));
+        myIntent.putExtra("description", pointInfo.get(1));
+        myIntent.putExtra("image", pointInfo.get(2));
+        myIntent.putExtra("placeId", pointInfo.get(3));
+        startActivity(myIntent);
+    }
+
+    public void openTecnico(){
+        Intent myIntent = new Intent(this, Tecnico.class);
         myIntent.putExtra("title", pointInfo.get(0));
         myIntent.putExtra("description", pointInfo.get(1));
         myIntent.putExtra("image", pointInfo.get(2));
