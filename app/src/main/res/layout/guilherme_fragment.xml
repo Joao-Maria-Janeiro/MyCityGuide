@@ -79,7 +79,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/colorAccent"
+        android:background="#000003ff"
         android:scaleType="fitXY"
         android:src="@drawable/linkedin"
         app:layout_constraintBottom_toBottomOf="parent"

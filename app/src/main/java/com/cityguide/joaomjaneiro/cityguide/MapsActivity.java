@@ -82,12 +82,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot s : dataSnapshot.getChildren()){
 
+                    double lat = Double.parseDouble(s.child("latitude").getValue().toString());
+                    double lng = Double.parseDouble(s.child("longitude").getValue().toString());
                     String name = s.child("name").getValue().toString();
-                    if(name.equals("R. Garret P")){
-                        name = "Armazens do Chiado";
-                    }
+                    LatLng location = new LatLng(lat, lng);
 
-                    locations.add(name);
+                    mMap.addMarker(new MarkerOptions().position(location).title(name)).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+
+
                 }
 
                 /*
@@ -96,12 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 */
 
-                LatLng location = new LatLng(38.7112053, -9.139566199999999);
-                LatLng location1 = new LatLng(38.7106071, -9.1432742);
-
-                mMap.addMarker(new MarkerOptions().position(location).title("Teste1")).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-
-                mMap.addMarker(new MarkerOptions().position(location1).title("Teste2")).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                //mMap.addMarker(new MarkerOptions().position(location1).title("Teste2")).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
 
 
             }
