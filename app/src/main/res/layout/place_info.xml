@@ -14,7 +14,7 @@
         android:textSize="16sp"
         android:layout_weight="1"
         android:text="Place Name"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/darkBlue"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
         android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
         android:layout_marginRight="30dp"
         android:adjustViewBounds="true"
         android:background="@drawable/img_view_user_places"
-        android:padding="3dp"
+        android:padding="2dp"
         android:scaleType="centerInside"
         app:srcCompat="@mipmap/ic_launcher" />
 
