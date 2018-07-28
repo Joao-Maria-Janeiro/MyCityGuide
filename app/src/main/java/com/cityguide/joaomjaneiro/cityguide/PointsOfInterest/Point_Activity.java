@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cityguide.joaomjaneiro.cityguide.MainActivity;
 import com.cityguide.joaomjaneiro.cityguide.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -53,6 +54,7 @@ public class Point_Activity extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.imageView);
         Button saveBtn = (Button)findViewById(R.id.saveBtn);
         ImageButton audioBtn = findViewById(R.id.audioBtn);
+        ImageButton mainBtn = findViewById(R.id.mainActivityBtn);
 
         Intent intent = getIntent();
         title = intent.getStringExtra("title");
@@ -139,5 +141,15 @@ public class Point_Activity extends AppCompatActivity {
 
             }
         });
+
+        mainBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 }
