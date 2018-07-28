@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cityguide.joaomjaneiro.cityguide.EasterEgg.Tecnico;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean addressFound = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
             buildDialog(MainActivity.this).show();
             setContentView(R.layout.no_internet);
         }else {
-
-
             //Checks if user is logged in
             firebaseAuth = FirebaseAuth.getInstance();
 
@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
+                progressBar.setVisibility(View.VISIBLE);
 
                 //If there's no Internet connection throw a popup
                 if(!isConnected(MainActivity.this)) {
@@ -143,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
                     homeBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -153,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
                     loadPoints();
                     if(addressFound){
+                        progressBar.setVisibility(View.GONE);
                         Picasso.get().load(pointInfo.get(2)).resize(getResources().getDisplayMetrics().widthPixels, 700).into(availableLocation);
                         availableLocation.setOnClickListener(new View.OnClickListener() {
                             @Override
