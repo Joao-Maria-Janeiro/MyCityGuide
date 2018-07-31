@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -57,13 +59,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     ArrayList<String> pointInfo = new ArrayList<>();
+    ArrayList<String> nextInfo = new ArrayList<>();
 
     String address;
 
     double lat = 0;
-    double longi = 0;
+    double lng = 0;
 
     boolean addressFound = false;
+
+    boolean imageFound = false;
 
 
     @Override
@@ -131,16 +136,16 @@ public class MainActivity extends AppCompatActivity {
                     String[] coord = coords.split(" ");
                     String[] buffer = coord[1].split(",");
                     lat = Double.parseDouble(buffer[0]);
-                    longi = Double.parseDouble(buffer[1]);
+                    lng = Double.parseDouble(buffer[1]);
                     //------------------------------------
 
                     //Displaying the information on screen
                     //------------------------------
-                    address = displayCoord(lat, longi);
+                    address = displayCoord(lat, lng);
                     //------------------------------
 
                     ImageButton availableLocation = findViewById(R.id.availableLocation);
-                    ImageButton upNextBtn = findViewById(R.id.upNextBtn);
+                    final ImageButton upNextBtn = findViewById(R.id.upNextBtn);
                     ImageButton homeBtn = findViewById(R.id.mainActivityBtn);
 
 
@@ -153,22 +158,42 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                     loadPoints();
+                    
                     if(addressFound){
                         progressBar.setVisibility(View.GONE);
-                        Picasso.get().load(pointInfo.get(2)).resize(getResources().getDisplayMetrics().widthPixels, 700).into(availableLocation);
-                        availableLocation.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if(pointInfo.get(0).equals("Av. Rovisco Pais")){
-                                    openTecnico();
-                                }else{
-                                    openActivity();
-                                }
 
-                            }
-                        });
-                        addressFound = false;
-                        pointInfo.clear();
+                        getNextPlaceImage(pointInfo.get(5));
+
+                        if(imageFound) {
+                            Picasso.get().load(pointInfo.get(2)).resize(getResources().getDisplayMetrics().widthPixels, 700).into(availableLocation);
+                            Picasso.get().load(nextInfo.get(1)).resize(getResources().getDisplayMetrics().widthPixels, 700).into(upNextBtn);
+                            availableLocation.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (pointInfo.get(0).equals("Av. Rovisco Pais")) {
+                                        openTecnico();
+                                    } else {
+                                        openActivity();
+                                    }
+
+                                }
+                            });
+
+                            upNextBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    String url = String.format("https://www.google.com/maps/dir/?api=1&origin=%s&destination=%s&travelmode=walking", address, nextInfo.get(0));
+                                    Intent browser = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                    startActivity(browser);
+                                }
+                            });
+
+
+                            addressFound = false;
+                            imageFound = false;
+                            pointInfo.clear();
+                            nextInfo.clear();
+                        }
                     }
 
                 }
@@ -199,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         }
     }
+
 
     //After the request is accepted get the coordinates
     @Override
@@ -294,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
                     String name = information.child("name").getValue().toString();
                     String image = information.child("image").getValue().toString();
                     String audio = information.child("audio").getValue().toString();
+                    String next = information.child("next").getValue().toString();
 
                     if(address.equals(name)){
                         pointInfo.add(name);
@@ -301,10 +328,34 @@ public class MainActivity extends AppCompatActivity {
                         pointInfo.add(image);
                         pointInfo.add(placeUid);
                         pointInfo.add(audio);
+                        pointInfo.add(next);
                         addressFound = true;
                         break;
                     }
                 }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void getNextPlaceImage(String place) {
+        //We go to a specific "Place" entry in the database and retrieve it's name and image
+        dbReference.child("Places").child(place).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.child("name").getValue().toString();
+                String image = dataSnapshot.child("image").getValue().toString();
+
+                Log.i("Image:", image);
+
+                nextInfo.add(name);
+                nextInfo.add(image);
+
+                imageFound = true;
             }
 
             @Override

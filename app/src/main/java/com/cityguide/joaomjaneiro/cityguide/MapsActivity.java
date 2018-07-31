@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import com.cityguide.joaomjaneiro.cityguide.PointsOfInterest.Point_Activity;
 import com.cityguide.joaomjaneiro.cityguide.Resources.HttpDataHandler;
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.RoutingListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -21,6 +24,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerClickListener {
@@ -42,6 +47,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private DatabaseReference mUsers;
     Marker marker;
     ArrayList<String> locations;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     String name = s.child("name").getValue().toString();
                     LatLng location = new LatLng(lat, lng);
 
-                    mMap.addMarker(new MarkerOptions().position(location).title(name)).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                    mMap.addMarker(new MarkerOptions().position(location).title(name)).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
 
                 }
@@ -109,6 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
 
     private class GetCoordinates extends AsyncTask<String,Void,Pair<String, String>> {
         ProgressDialog dialog = new ProgressDialog(MapsActivity.this);
@@ -189,6 +196,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        Toast.makeText(this, marker.getTitle(), Toast.LENGTH_SHORT).show();
         return false;
     }
 
