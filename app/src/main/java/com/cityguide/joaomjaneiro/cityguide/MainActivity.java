@@ -157,12 +157,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-                    loadPoints();
-                    
+                    loadPoints(progressBar, availableLocation, upNextBtn);
+                    /*
                     if(addressFound){
                         progressBar.setVisibility(View.GONE);
-
-                        getNextPlaceImage(pointInfo.get(5));
 
                         if(imageFound) {
                             Picasso.get().load(pointInfo.get(2)).resize(getResources().getDisplayMetrics().widthPixels, 700).into(availableLocation);
@@ -194,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                             pointInfo.clear();
                             nextInfo.clear();
                         }
-                    }
+                    }*/
 
                 }
 
@@ -310,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Gets all the points from the database
-    public void loadPoints() {
+    public void loadPoints(final ProgressBar progressBar, final ImageButton availableLocation, final ImageButton upNextButton) {
         dbReference.child("Places").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -329,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
                         pointInfo.add(placeUid);
                         pointInfo.add(audio);
                         pointInfo.add(next);
+                        getNextPlaceImage(next, progressBar, availableLocation, upNextButton, name, image);
                         addressFound = true;
                         break;
                     }
@@ -342,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void getNextPlaceImage(String place) {
+    public void getNextPlaceImage(String place, final ProgressBar progressBar, final ImageButton availableLocation, final ImageButton upNextButton, final String address, final String address_image) {
         //We go to a specific "Place" entry in the database and retrieve it's name and image
         dbReference.child("Places").child(place).addValueEventListener(new ValueEventListener() {
             @Override
@@ -355,6 +354,8 @@ public class MainActivity extends AppCompatActivity {
                 nextInfo.add(name);
                 nextInfo.add(image);
 
+                updateUI(progressBar, availableLocation, upNextButton, address, address_image, name, image);
+
                 imageFound = true;
             }
 
@@ -363,6 +364,33 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void updateUI(ProgressBar progressBar, ImageButton availableLocation, ImageButton upNextBtn, final String address, final String address_image, final String next, String next_image) {
+        progressBar.setVisibility(View.GONE);
+        Picasso.get().load(address_image).resize(getResources().getDisplayMetrics().widthPixels, 700).into(availableLocation);
+        Picasso.get().load(next_image).resize(getResources().getDisplayMetrics().widthPixels, 700).into(upNextBtn);
+        availableLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (address.equals("Av. Rovisco Pais")) {
+                    openTecnico();
+                } else {
+                    openActivity();
+                }
+
+            }
+        });
+
+        upNextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = String.format("https://www.google.com/maps/dir/?api=1&origin=%s&destination=%s&travelmode=walking", address, next);
+                Intent browser = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(browser);
+            }
+        });
+
     }
 
     public void openActivity(){
