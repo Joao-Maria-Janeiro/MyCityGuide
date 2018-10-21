@@ -6,7 +6,7 @@ Information for each location:
 * Image
 * Title
 * Description
-* Audio GuideA
+* Audio Guide
 
 ## Built With
 
