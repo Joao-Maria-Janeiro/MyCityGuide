@@ -15,12 +15,12 @@ Information for each location:
 * [GMaps API](https://cloud.google.com/maps-platform/maps/?apis=maps) - The Location API
 
 ## Technologies used
-# Firebase
+### Firebase
 * firebase-database:11.6.0
 * firebase-auth:11.6.0
 * firebase-storage:11.6.0
 
-# GMaps API
+### GMaps API
 * play-services-maps:11.6.0
 * locationManager
 * locationListener
